@@ -2,7 +2,6 @@ export default function QueryParameters(app) {
   const calculator = (req, res) => {
     const { a, b, operation } = req.query;
     let result = 0;
-    
     switch (operation) {
       case "add":
         result = parseInt(a) + parseInt(b);
@@ -21,6 +20,5 @@ export default function QueryParameters(app) {
     }
     res.send(result.toString());
   };
-  
   app.get("/lab5/calculator", calculator);
 }

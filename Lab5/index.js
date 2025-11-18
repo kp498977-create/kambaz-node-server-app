@@ -2,8 +2,11 @@ import PathParameters from "./PathParameters.js";
 import QueryParameters from "./QueryParameters.js";
 import WorkingWithObjects from "./WorkingWithObjects.js";
 import WorkingWithArrays from "./WorkingWithArrays.js";
+import express from 'express';
 
 export default function Lab5(app) {
+
+  app.use(express.json());
   app.get("/lab5/welcome", (req, res) => {
     res.send("Welcome to Lab 5");
   });

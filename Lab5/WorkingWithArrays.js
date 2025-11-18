@@ -1,13 +1,11 @@
 let todos = [
-  { id: 1, title: "Task 1", completed: false },
-  { id: 2, title: "Task 2", completed: true },
-  { id: 3, title: "Task 3", completed: false },
-  { id: 4, title: "Task 4", completed: true },
+  { id: 1, title: "Task 1", completed: false, description: "" },
+  { id: 2, title: "Task 2", completed: true, description: "" },
+  { id: 3, title: "Task 3", completed: false, description: "" },
+  { id: 4, title: "Task 4", completed: true, description: "" },
 ];
-
 export default function WorkingWithArrays(app) {
-  // Get all todos (with optional filtering)
-  app.get("/lab5/todos", (req, res) => {
+  const getTodos = (req, res) => {
     const { completed } = req.query;
     if (completed !== undefined) {
       const completedBool = completed === "true";
@@ -16,45 +14,36 @@ export default function WorkingWithArrays(app) {
       return;
     }
     res.json(todos);
-  });
-  
-  // Get todo by ID
-  app.get("/lab5/todos/:id", (req, res) => {
+  };
+  const getTodoById = (req, res) => {
     const { id } = req.params;
     const todo = todos.find((t) => t.id === parseInt(id));
     res.json(todo);
-  });
-  
-  // Create new todo (old GET method)
-  app.get("/lab5/todos/create", (req, res) => {
+  };
+  const createNewTodo = (req, res) => {
     const newTodo = {
       id: new Date().getTime(),
       title: "New Task",
       completed: false,
+      description: "",
     };
     todos.push(newTodo);
     res.json(todos);
-  });
-  
-  // Create new todo (proper POST method)
-  app.post("/lab5/todos", (req, res) => {
+  };
+  const postNewTodo = (req, res) => {
     const newTodo = { ...req.body, id: new Date().getTime() };
     todos.push(newTodo);
     res.json(newTodo);
-  });
-  
-  // Delete todo by ID (old GET method)
-  app.get("/lab5/todos/:id/delete", (req, res) => {
+  };
+  const removeTodo = (req, res) => {
     const { id } = req.params;
     const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
-    if (todoIndex !== -1) {
+    if (todoIndex >= 0) {
       todos.splice(todoIndex, 1);
     }
     res.json(todos);
-  });
-  
-  // Delete todo (proper DELETE method)
-  app.delete("/lab5/todos/:id", (req, res) => {
+  };
+  const deleteTodo = (req, res) => {
     const { id } = req.params;
     const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
     if (todoIndex === -1) {
@@ -63,20 +52,26 @@ export default function WorkingWithArrays(app) {
     }
     todos.splice(todoIndex, 1);
     res.sendStatus(200);
-  });
-  
-  // Update todo title (old GET method)
-  app.get("/lab5/todos/:id/title/:title", (req, res) => {
+  };
+  const updateTodoTitle = (req, res) => {
     const { id, title } = req.params;
     const todo = todos.find((t) => t.id === parseInt(id));
-    if (todo) {
-      todo.title = title;
-    }
+    if (todo) todo.title = title;
     res.json(todos);
-  });
-  
-  // Update todo (proper PUT method)
-  app.put("/lab5/todos/:id", (req, res) => {
+  };
+  const updateTodoDescription = (req, res) => {
+    const { id, description } = req.params;
+    const todo = todos.find((t) => t.id === parseInt(id));
+    if (todo) todo.description = description;
+    res.json(todos);
+  };
+  const updateTodoCompleted = (req, res) => {
+    const { id, completed } = req.params;
+    const todo = todos.find((t) => t.id === parseInt(id));
+    if (todo) todo.completed = completed === "true";
+    res.json(todos);
+  };
+  const updateTodo = (req, res) => {
     const { id } = req.params;
     const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
     if (todoIndex === -1) {
@@ -90,5 +85,16 @@ export default function WorkingWithArrays(app) {
       return t;
     });
     res.sendStatus(200);
-  });
+  };
+
+  app.get("/lab5/todos", getTodos);
+  app.get("/lab5/todos/create", createNewTodo);
+  app.post("/lab5/todos", postNewTodo);
+  app.delete("/lab5/todos/:id", deleteTodo);
+  app.get("/lab5/todos/:id/delete", removeTodo);
+  app.get("/lab5/todos/:id/title/:title", updateTodoTitle);
+  app.get("/lab5/todos/:id/description/:description", updateTodoDescription);
+  app.get("/lab5/todos/:id/completed/:completed", updateTodoCompleted);
+  app.put("/lab5/todos/:id", updateTodo);
+  app.get("/lab5/todos/:id", getTodoById);
 }
