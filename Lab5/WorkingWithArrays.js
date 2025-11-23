@@ -36,16 +36,16 @@ export default function WorkingWithArrays(app) {
     res.json(newTodo);
   };
   const removeTodo = (req, res) => {
-  const { id } = req.params;
-  const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
+    const { id } = req.params;
+    const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
 
-  if (todoIndex === -1) {
-    return res.status(404).json({ message: `Todo with ID ${id} does not exist` });
-  }
+    if (todoIndex === -1) {
+      return res.status(404).json({ message: `Todo with ID ${id} does not exist` });
+    }
 
-  todos.splice(todoIndex, 1);
-  res.json({ message: "Todo deleted successfully" });
-};
+    todos.splice(todoIndex, 1);
+    res.json(todos);
+  };
 
   const deleteTodo = (req, res) => {
     const { id } = req.params;
